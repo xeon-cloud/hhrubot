@@ -2,6 +2,6 @@ from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton)
 
 
 MAIN = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Задачи')],
-    [KeyboardButton(text='Настройки'), KeyboardButton(text='Статистика')]
+    [KeyboardButton(text='Поиск вакансий')],
+    [KeyboardButton(text='Создать таргет')]
 ], resize_keyboard=True)

@@ -1,7 +1,7 @@
 import asyncio
 
-from .settings import bot, dp
-from .routers import includeRouters
+from settings import bot, dp
+from src.routers import includeRouters
 
 
 async def initBot():
