@@ -19,3 +19,5 @@ class SearchBuilder(Builder):
         if not request:
             await self.message.answer('Произошла ошибка приложения')
             return
+        
+        print(request[0]['id'])
