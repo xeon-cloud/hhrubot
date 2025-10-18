@@ -16,8 +16,8 @@ async def start(m: Message):
 
 @router.message(F.text == 'Поиск вакансий')
 async def search_vacancies(m: Message, state: FSMContext):
-    await m.answer('Введите ваш запрос')
-    await state.set_state(app_states.search)
+    await m.answer('Введите регион поиска. Чтобы пропустить используйте all')
+    await state.set_state(app_states.city_search)
 
 
 @router.message(F.text == 'Создать таргет')

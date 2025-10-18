@@ -12,4 +12,6 @@ class Builder:
         self.message = message
         self.callback = callback
         self.state = state
-        
+
+        if self.callback and not self.message:
+            self.message = self.callback.message

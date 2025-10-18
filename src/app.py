@@ -2,10 +2,13 @@ import aiohttp
 from typing import List, Union
 
 
+class Endpoints:
+    vacancies = 'https://api.hh.ru/vacancies'
+    areas = 'https://api.hh.ru/areas'
+
+
 class App:
     def __init__(self):
-        self.endpoint = 'https://api.hh.ru/vacancies'
-
         self.session: aiohttp.ClientSession = None
         self.user_agent = 'Parser/1.0 (parser-feedback@icloud.com)'
         self.timeout = 5
@@ -17,6 +20,10 @@ class App:
             proxy=self.proxy
         )
         self.session.headers.update({'User-Agent': self.user_agent})
+
+    async def close_session(self):
+        if self.session:
+            await self.session.close()
 
     async def get_vacancies(
         self,
@@ -32,7 +39,7 @@ class App:
             params['area'] = area
 
         try:
-            async with self.session.get(self.endpoint,
+            async with self.session.get(Endpoints.vacancies,
                                         params=params, ssl=False) as request:
                 response = await request.json()
                 if 'items' in response:
@@ -42,18 +49,30 @@ class App:
 
     async def get_vacancy_info(self, id: Union[str, int]) -> dict:
         try:
-            async with self.session.get(f'{self.endpoint}/{id}', ssl=False) as request:
+            async with self.session.get(f'{Endpoints.vacancies}/{id}', ssl=False) as request:
                 response = await request.json()
                 return response
         except Exception as e:
             print(f'internal app err - {e}')
 
-    async def get_regions(self, country_id: int = 113) -> list:
+    async def get_areas(
+        self,
+        country_id: int = 113,
+        query: str = None
+    ) -> list:
+        data = []
         try:
-            async with self.session.get('https://api.hh.ru/areas', ssl=False) as request:
+            async with self.session.get(Endpoints.areas, ssl=False) as request:
                 response = await request.json()
                 for country in response:
-                    if country['id'] == country_id:
-                        return country['areas']
+                    if int(country['id']) == country_id:
+                        for area in country['areas']:
+                            if not query:
+                                data.append((area['id'], area['name']))
+                                continue
+
+                            if query.lower() in area['name'].lower():
+                                data.append((area['id'], area['name']))
+            return data
         except Exception as e:
             print(f'internal app err - {e}')
