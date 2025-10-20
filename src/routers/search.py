@@ -29,3 +29,19 @@ async def handle_query(m: Message, state: FSMContext):
         message=m,
         state=state
     ).go_search()
+
+
+@router.callback_query(F.data.split('=')[0] == 'go_page')
+async def go_to_page(c: CallbackQuery, state: FSMContext):
+    await SearchBuilder(
+        callback=c,
+        state=state
+    ).go_search(pagination=True)
+
+
+@router.callback_query(F.data.split('=')[0] == 'vacancy')
+async def open_vacancy(c: CallbackQuery, state: FSMContext):
+    await SearchBuilder(
+        callback=c,
+        state=state
+    ).init_vacancy()

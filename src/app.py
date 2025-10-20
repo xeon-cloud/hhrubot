@@ -28,7 +28,7 @@ class App:
     async def get_vacancies(
         self,
         query: str,
-        per_page: Union[int, str] = 100,
+        per_page: Union[int, str] = 15,
         page: Union[int, str] = 0,
         area: Union[int, str] = None
     ) -> Union[List, None]:
@@ -43,13 +43,13 @@ class App:
                                         params=params, ssl=False) as request:
                 response = await request.json()
                 if 'items' in response:
-                    return response['items']
+                    return response['items'], response['pages']
         except Exception as e:
             print(f'internal app err - {e}')
 
     async def get_vacancy_info(self, id: Union[str, int]) -> dict:
         try:
-            async with self.session.get(f'{Endpoints.vacancies}/{id}', ssl=False) as request:
+            async with self.session.get(f'{Endpoints.vacancies}/{id}', params={'host': 'hh.ru'}, ssl=False) as request:
                 response = await request.json()
                 return response
         except Exception as e:
